@@ -37,3 +37,4 @@
 /scripts/MControlCenter-*-bin/
 /MControlCenter-*.tar.gz
 /MControlCenter-*-bin/
+*.deb
