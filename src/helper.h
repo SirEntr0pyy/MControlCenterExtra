@@ -33,6 +33,7 @@ public:
     bool loadEcSysModule();
     bool updateData();
     void updateDataAsync();
+    int getFanSpeed(int address) const;
     std::optional<int> getOptionalValue(int address) const;
     int getValue(int address) const;
     QByteArray getValues(int startAddress, int size) const;
@@ -40,6 +41,7 @@ public:
     void quit();
     QDBusInterface *iface;
 private:
+    bool isUpdatingData = false;
     void printError(QDBusError const & error) const;
 private slots:
     void callFinishedSlot(QDBusPendingCallWatcher *call);

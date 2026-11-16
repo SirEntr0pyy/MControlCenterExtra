@@ -223,7 +223,9 @@ void MainWindow::setUpdateInterval(int msec) const {
 }
 
 void MainWindow::realtimeUpdate() {
-    operate.updateEcDataAsync();
+    if (!operate.isMsiEcLoaded()) {
+        operate.updateEcDataAsync();
+    }
     updateData();
 }
 
@@ -320,34 +322,32 @@ void MainWindow::updateBatteryCharge() {
 }
 
 void MainWindow::updateBatteryThreshold() {
-    if (operate.updateEcData()) {
-        int batteryThreshold = operate.getBatteryThreshold();
-        if (batteryThreshold == 0)
-            ui->batteryThresholdValueLabel->setText("100 %");
-        else
-            ui->batteryThresholdValueLabel->setText(QString::number(batteryThreshold) + " %");
+    int batteryThreshold = operate.getBatteryThreshold();
+    if (batteryThreshold == 0)
+        ui->batteryThresholdValueLabel->setText("100 %");
+    else
+        ui->batteryThresholdValueLabel->setText(QString::number(batteryThreshold) + " %");
 
-        switch (batteryThreshold) {
-            case 0:
-            case 100:
-                ui->bestMobilityRadioButton->click();
-                batteryThreshold = 100;
-                break;
-            case 60:
-                ui->bestBatteryRadioButton->click();
-                break;
-            case 80:
-                ui->balancedBatteryRadioButton->click();
-                break;
-            default:
-                ui->customBatteryThresholdRadioButton->click();
-                ui->customBatteryApplyButton->setEnabled(
-                        batteryThreshold != ui->customBatteryThresholdSpinBox->value());
-                break;
-        }
-
-        ui->customBatteryThresholdSpinBox->setValue(batteryThreshold);
+    switch (batteryThreshold) {
+        case 0:
+        case 100:
+            ui->bestMobilityRadioButton->click();
+            batteryThreshold = 100;
+            break;
+        case 60:
+            ui->bestBatteryRadioButton->click();
+            break;
+        case 80:
+            ui->balancedBatteryRadioButton->click();
+            break;
+        default:
+            ui->customBatteryThresholdRadioButton->click();
+            ui->customBatteryApplyButton->setEnabled(
+                    batteryThreshold != ui->customBatteryThresholdSpinBox->value());
+            break;
     }
+
+    ui->customBatteryThresholdSpinBox->setValue(batteryThreshold);
 }
 
 void MainWindow::updateChargingStatus() {
@@ -443,39 +443,37 @@ void MainWindow::updateCoolerBoostState() const {
 }
 
 void MainWindow::updateUserMode() {
-    if (operate.updateEcData()) {
-        switch (operate.getUserMode()) {
-            case user_mode::balanced_mode:
-                ui->balancedModeRadioButton->setChecked(true);
-                balancedMode->setChecked(true);
-                break;
-            case user_mode::performance_mode:
-                ui->highPerformanceModeRadioButton->setChecked(true);
-                highPerformanceMode->setChecked(true);
-                break;
-            case user_mode::silent_mode:
-                ui->silentModeRadioButton->setChecked(true);
-                silentMode->setChecked(true);
-                break;
-            case user_mode::super_battery_mode:
-                ui->superBatteryModeRadioButton->setChecked(true);
-                superBatteryMode->setChecked(true);
-                break;
-            case user_mode::unknown_mode:
-                //fall to default, happens on some models after booting
-            default:
-                if (!operate.isMsiEcLoaded()){
-                    ui->modeFormWidget->setDisabled(true);
-                    if (modeTrayMenu)
-                        modeTrayMenu->setDisabled(true);
-                } else {
-                    ui->superBatteryModeRadioButton->setChecked(false);
-                    ui->silentModeRadioButton->setChecked(false);
-                    ui->balancedModeRadioButton->setChecked(false);
-                    ui->highPerformanceModeRadioButton->setChecked(false);
-                }
-                break;
-        }
+    switch (operate.getUserMode()) {
+        case user_mode::balanced_mode:
+            ui->balancedModeRadioButton->setChecked(true);
+            balancedMode->setChecked(true);
+            break;
+        case user_mode::performance_mode:
+            ui->highPerformanceModeRadioButton->setChecked(true);
+            highPerformanceMode->setChecked(true);
+            break;
+        case user_mode::silent_mode:
+            ui->silentModeRadioButton->setChecked(true);
+            silentMode->setChecked(true);
+            break;
+        case user_mode::super_battery_mode:
+            ui->superBatteryModeRadioButton->setChecked(true);
+            superBatteryMode->setChecked(true);
+            break;
+        case user_mode::unknown_mode:
+            //fall to default, happens on some models after booting
+        default:
+            if (!operate.isMsiEcLoaded()){
+                ui->modeFormWidget->setDisabled(true);
+                if (modeTrayMenu)
+                    modeTrayMenu->setDisabled(true);
+            } else {
+                ui->superBatteryModeRadioButton->setChecked(false);
+                ui->silentModeRadioButton->setChecked(false);
+                ui->balancedModeRadioButton->setChecked(false);
+                ui->highPerformanceModeRadioButton->setChecked(false);
+            }
+            break;
     }
 }
 
@@ -581,8 +579,7 @@ void MainWindow::setSuperBatteryMode() {
 
 void MainWindow::setCoolerBoostState(bool enabled) const {
     operate.setCoolerBoostState(enabled);
-    if (operate.updateEcData())
-        updateCoolerBoostState();
+    updateCoolerBoostState();
 }
 
 QVector<int> MainWindow::getFan1SpeedValues() const {
@@ -646,8 +643,11 @@ void MainWindow::setFanSpeedSettings() {
         operate.setFan2SpeedSettings(getFan2SpeedValues());
         operate.setFan2TempSettings(getFan2TempValues());
     }
-    if (operate.updateEcData())
+    if (operate.isMsiEcLoaded()) {
         checkFanSettingsChanged();
+    } else if (operate.updateEcData()) {
+        checkFanSettingsChanged();
+    }
 }
 
 void MainWindow::setFanModeAdvanced(bool enabled) const {
@@ -823,9 +823,7 @@ void MainWindow::on_usbPowerShareCheckBox_clicked(bool checked) const {
 
 void MainWindow::on_webCamCheckBox_clicked(bool checked) const {
     operate.setWebCamState(checked);
-    if (operate.updateEcData()) {
-        updateWebCamState();
-    }
+    updateWebCamState();
 }
 
 void MainWindow::on_fnSuperSwapCheckBox_clicked(bool checked) const {
@@ -840,9 +838,6 @@ void MainWindow::on_coolerBoostCheckBox_clicked(bool checked) const {
 void MainWindow::on_keyboardBrightnessSlider_valueChanged(int value) const {
     if (currentBacklightEffect == 0) {
         operate.setKeyboardBrightness(value);
-        if (operate.updateEcData()) {
-            updateKeyboardBrightness();
-        }
     }
 }
 

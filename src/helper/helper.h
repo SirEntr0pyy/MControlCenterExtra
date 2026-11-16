@@ -39,6 +39,7 @@ signals:
 public slots:
     Q_NOREPLY void quit() const;
     [[nodiscard]] QByteArray getData() const;
+    [[nodiscard]] int getFanSpeed(const int &address) const;
     Q_NOREPLY void putValue(const int &address, const int &value) const;
     [[nodiscard]] bool isEcSysModuleLoaded() const;
     [[nodiscard]] bool loadEcSysModule() const;

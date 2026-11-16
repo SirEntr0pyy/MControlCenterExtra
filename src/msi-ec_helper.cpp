@@ -365,6 +365,5 @@ inline T MsiEcHelper::getValue(QString method, T defaultValue) const {
 
 template <typename T>
 void MsiEcHelper::setValue(QString method, T value) const {
-    iface->call(method, value);
-    printError(iface->lastError());
+    iface->asyncCall(method, value);
 }

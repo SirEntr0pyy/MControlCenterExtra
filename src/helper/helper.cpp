@@ -36,6 +36,10 @@ QByteArray Helper::getData() const {
     return rw.readFromFile();
 }
 
+int Helper::getFanSpeed(const int &address) const {
+    return rw.getFanSpeed(address);
+}
+
 void Helper::putValue(const int &address, const int &value) const {
     if (value >= 0 && value <= 255)
         rw.writeToFile(address, value);

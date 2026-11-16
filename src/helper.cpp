@@ -62,6 +62,9 @@ bool Helper::updateData() {
 }
 
 void Helper::updateDataAsync() {
+    if (isUpdatingData)
+        return;
+    isUpdatingData = true;
     QDBusPendingCall async = iface->asyncCall("getData");
     QDBusPendingCallWatcher const *watcher = new QDBusPendingCallWatcher(async, this);
 
@@ -69,6 +72,7 @@ void Helper::updateDataAsync() {
 }
 
 void Helper::callFinishedSlot(QDBusPendingCallWatcher *call) {
+    isUpdatingData = false;
     QDBusPendingReply<QByteArray> reply = *call;
     if (reply.isError()) {
         printError(reply.error());
@@ -78,6 +82,13 @@ void Helper::callFinishedSlot(QDBusPendingCallWatcher *call) {
         MainWindow::setUpdateDataError(false);
     }
     call->deleteLater();
+}
+
+int Helper::getFanSpeed(int address) const {
+    if (QDBusReply<int> reply = iface->call("getFanSpeed", address); reply.isValid())
+        return reply.value();
+    printError(iface->lastError());
+    return 0;
 }
 
 std::optional<int> Helper::getOptionalValue(int address) const {

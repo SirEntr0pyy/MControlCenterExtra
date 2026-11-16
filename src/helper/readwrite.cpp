@@ -33,6 +33,24 @@ QByteArray ReadWrite::readFromFile() const {
     return {};
 }
 
+int ReadWrite::getFanSpeed(const int address) const {
+    if (address <= 0)
+        return 0;
+    if (QFile file(ioFile); file.open(QIODevice::ReadOnly)) {
+        if (file.seek(address - 1)) {
+            QByteArray data = file.read(2);
+            if (data.size() == 2) {
+                int value0 = (unsigned char)data[1];
+                int value1 = (unsigned char)data[0];
+                int value = (value1 << 8) | value0;
+                if (value > 0)
+                    return 480000 / value;
+            }
+        }
+    }
+    return 0;
+}
+
 void ReadWrite::writeToFile(const int pos, BYTE value) const {
     std::ofstream file(ioFile.toStdString(), std::ios::in | std::ios::out | std::ios::binary);
     if (file.is_open()) {
