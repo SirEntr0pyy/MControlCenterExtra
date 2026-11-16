@@ -18,6 +18,8 @@
 
 #include "readwrite.h"
 #include <fstream>
+#include <fcntl.h>
+#include <unistd.h>
 
 #include <QFile>
 
@@ -36,16 +38,17 @@ QByteArray ReadWrite::readFromFile() const {
 int ReadWrite::getFanSpeed(const int address) const {
     if (address <= 0)
         return 0;
-    if (QFile file(ioFile); file.open(QIODevice::ReadOnly)) {
-        if (file.seek(address - 1)) {
-            QByteArray data = file.read(2);
-            if (data.size() == 2) {
-                int value0 = (unsigned char)data[1];
-                int value1 = (unsigned char)data[0];
-                int value = (value1 << 8) | value0;
-                if (value > 0)
-                    return 480000 / value;
-            }
+    int fd = ::open(ioFile.toUtf8().constData(), O_RDONLY);
+    if (fd >= 0) {
+        unsigned char data[2] = {0, 0};
+        ssize_t n = ::pread(fd, data, 2, address - 1);
+        ::close(fd);
+        if (n == 2) {
+            int value0 = data[1];
+            int value1 = data[0];
+            int value = (value1 << 8) | value0;
+            if (value > 0)
+                return 480000 / value;
         }
     }
     return 0;
