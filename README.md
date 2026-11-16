@@ -2,6 +2,8 @@
 
 **MControlCenter Extra** is an enhanced, highly-optimized fork of [MControlCenter](https://github.com/dmitry-s93/MControlCenter) (originally by Dmitry Serov) designed for MSI laptops running GNU/Linux, with specific optimizations for Debian, Ubuntu, Fedora, and Arch Linux.
 
+> **Note:** Tested with the MSI Modern 14 C7M with Debian 13.
+
 <img width="1500" height="1332" alt="MCC3" src="https://github.com/user-attachments/assets/75b5ee18-ed99-4a89-b9fe-1ec0078760e8" />
 
 ---
@@ -35,7 +37,7 @@ This fork introduces performance optimizations (zero UI lag), modern MSI hardwar
 Device support relies on the Linux kernel driver [**msi-ec**](https://github.com/BeardOverflow/msi-ec) and the `ec_sys` module.
 
 - [**List of tested devices supported by msi-ec**](https://github.com/BeardOverflow/msi-ec/discussions/277)
-- Tested and confirmed working on: **MSI Modern 14 C7M (MS-14JK)**, AMD Barcelo / Ryzen 7000 series.
+- Tested with the MSI Modern 14 C7M with Debian 13 (MS-14JK, AMD Barcelo / Ryzen 7000 series).
 
 ---
 
