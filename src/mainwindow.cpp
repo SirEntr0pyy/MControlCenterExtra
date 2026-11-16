@@ -863,36 +863,36 @@ void MainWindow::setBacklightEffect(int effect) {
         savedKeyboardBrightness = ui->keyboardBrightnessSlider->value();
         ui->keyboardBrightnessSlider->setEnabled(false);
         if (effect == 1) { // Breathing
-            keyboardEffectTimer.start(300);
+            keyboardEffectTimer.start(450);
         } else if (effect == 2) { // Heartbeat
-            keyboardEffectTimer.start(180);
+            keyboardEffectTimer.start(220);
         } else if (effect == 3) { // Blink
-            keyboardEffectTimer.start(500);
+            keyboardEffectTimer.start(600);
         }
     }
 }
 
 void MainWindow::keyboardEffectTimerTimeout() {
     switch (currentBacklightEffect) {
-    case 1: { // Breathing: 0 -> 1 -> 2 -> 3 -> 3 -> 2 -> 1 -> 0
-        static const int breathingSteps[] = {0, 1, 2, 3, 3, 2, 1, 0};
+    case 1: { // Breathing: 0 -> 0 -> 1 -> 2 -> 3 -> 3 -> 2 -> 1
+        static const int breathingSteps[] = {0, 0, 1, 2, 3, 3, 2, 1};
         constexpr int numSteps = sizeof(breathingSteps) / sizeof(breathingSteps[0]);
-        keyboardEffectStep = (keyboardEffectStep + 1) % numSteps;
         operate.setKeyboardBrightness(breathingSteps[keyboardEffectStep]);
+        keyboardEffectStep = (keyboardEffectStep + 1) % numSteps;
         break;
     }
-    case 2: { // Heartbeat: 0 -> 2 -> 0 -> 3 -> 0 -> 0 -> 0 -> 0
-        static const int heartbeatSteps[] = {0, 2, 0, 3, 0, 0, 0, 0};
+    case 2: { // Heartbeat: 2 -> 0 -> 3 -> 0 -> 0 -> 0 -> 0
+        static const int heartbeatSteps[] = {2, 0, 3, 0, 0, 0, 0};
         constexpr int numSteps = sizeof(heartbeatSteps) / sizeof(heartbeatSteps[0]);
-        keyboardEffectStep = (keyboardEffectStep + 1) % numSteps;
         operate.setKeyboardBrightness(heartbeatSteps[keyboardEffectStep]);
+        keyboardEffectStep = (keyboardEffectStep + 1) % numSteps;
         break;
     }
-    case 3: { // Blink: 0 -> 0 -> 3 -> 3
-        static const int blinkSteps[] = {0, 0, 3, 3};
+    case 3: { // Blink: 3 -> 0
+        static const int blinkSteps[] = {3, 0};
         constexpr int numSteps = sizeof(blinkSteps) / sizeof(blinkSteps[0]);
-        keyboardEffectStep = (keyboardEffectStep + 1) % numSteps;
         operate.setKeyboardBrightness(blinkSteps[keyboardEffectStep]);
+        keyboardEffectStep = (keyboardEffectStep + 1) % numSteps;
         break;
     }
     default:

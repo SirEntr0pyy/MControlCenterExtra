@@ -31,5 +31,10 @@ install -vDm644 $APP_DIR$DBUS_CONF $DBUS_SYSTEM_PATH$DBUS_CONF
 
 install -vDm644 $APP_DIR$DBUS_SERVICE $DBUS_SERVICES_PATH$DBUS_SERVICE
 
+# Restart running helper and app so new binaries take effect immediately
+busctl call mcontrolcenter.helper / dmitry_s93.MControlCenter quit 2>/dev/null || true
+killall -9 mcontrolcenter-helper 2>/dev/null || true
+killall -9 mcontrolcenter 2>/dev/null || true
+
 echo "Installation was successful"
 
