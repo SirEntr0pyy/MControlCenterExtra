@@ -39,8 +39,9 @@ int main(int argc, char *argv[]) {
     QTranslator translator;
     const QStringList uiLanguages = QLocale::system().uiLanguages();
     for (const QString &locale: uiLanguages) {
-        const QString baseName = "lang_" + QLocale(locale).name();
-        if (translator.load(":/translations/" + baseName)) {
+        const QString localeName = QLocale(locale).name();
+        if (translator.load(":/translations/MControlCenter_" + localeName) ||
+            translator.load(":/translations/lang_" + localeName)) {
             QApplication::installTranslator(&translator);
             break;
         }
