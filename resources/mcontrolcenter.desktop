@@ -1,7 +1,9 @@
 [Desktop Entry]
 Categories=System;Settings;Utility;
 Encoding=UTF-8
-Name=MControlCenter
+Name=MControlCenter Extra
+Comment=Change MSI Laptop Settings (Extra Fork)
+Comment[pt]=Alterar Definições de Portáteis MSI (MControlCenter Extra)
 GenericName=Change MSI Laptop Settings
 GenericName[ru]=Изменение настроек ноутбука MSI
 GenericName[pt]=Alterar Definições de Portáteis MSI
