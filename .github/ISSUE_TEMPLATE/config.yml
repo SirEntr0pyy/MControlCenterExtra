@@ -1,8 +1,0 @@
-blank_issues_enabled: true
-contact_links:
-  - name: msi-ec Kernel Driver Issues
-    url: https://github.com/BeardOverflow/msi-ec/issues
-    about: If your laptop model is not supported by the kernel driver itself, please report it to the msi-ec project.
-  - name: Original MControlCenter
-    url: https://github.com/dmitry-s93/MControlCenter
-    about: Upstream project by Dmitry Serov.
