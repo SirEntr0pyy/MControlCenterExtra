@@ -175,6 +175,8 @@ MainWindow::MainWindow(QWidget *parent)
     timerSleepWatcher.setInterval(10 * 1000);
     timerSleepWatcher.start();
 
+    connect(&keyboardEffectTimer, &QTimer::timeout, this, &MainWindow::keyboardEffectTimerTimeout);
+
     ui->QtVersionValue->setText(QT_VERSION_STR);
     ui->versionValueLabel->setText(MControlCenter_VERSION);
     ui->autoAcDcProfilesGroupBox->setChecked(s.getValue("Settings/autoAcDcProfilesState").toBool());
@@ -184,6 +186,9 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 MainWindow::~MainWindow() {
+    if (currentBacklightEffect != 0) {
+        operate.setKeyboardBrightness(savedKeyboardBrightness);
+    }
     delete ui;
 }
 
@@ -278,6 +283,12 @@ void MainWindow::loadConfigs() {
 
     if (operate.isKeyboardBacklightSupport()) {
         updateKeyboardBrightness();
+        Settings s;
+        if (s.isValueExist("Settings/KeyboardBacklightEffect")) {
+            int savedEffect = s.getValue("Settings/KeyboardBacklightEffect").toInt();
+            ui->keyboardBacklightEffectComboBox->setCurrentIndex(savedEffect);
+            setBacklightEffect(savedEffect);
+        }
     } else {
         ui->keyboardBrightnessSlider->setEnabled(false);
         ui->tabWidget->removeTab(3);
@@ -409,7 +420,9 @@ void MainWindow::updateKeyboardBacklightMode() {
 }
 
 void MainWindow::updateKeyboardBrightness() const {
-    ui->keyboardBrightnessSlider->setSliderPosition(operate.getKeyboardBrightness());
+    if (currentBacklightEffect == 0) {
+        ui->keyboardBrightnessSlider->setSliderPosition(operate.getKeyboardBrightness());
+    }
 }
 
 void MainWindow::updateUsbPowerShareState() {
@@ -433,19 +446,19 @@ void MainWindow::updateUserMode() {
     if (operate.updateEcData()) {
         switch (operate.getUserMode()) {
             case user_mode::balanced_mode:
-                ui->balancedModeRadioButton->click();
+                ui->balancedModeRadioButton->setChecked(true);
                 balancedMode->setChecked(true);
                 break;
             case user_mode::performance_mode:
-                ui->highPerformanceModeRadioButton->click();
+                ui->highPerformanceModeRadioButton->setChecked(true);
                 highPerformanceMode->setChecked(true);
                 break;
             case user_mode::silent_mode:
-                ui->silentModeRadioButton->click();
+                ui->silentModeRadioButton->setChecked(true);
                 silentMode->setChecked(true);
                 break;
             case user_mode::super_battery_mode:
-                ui->superBatteryModeRadioButton->click();
+                ui->superBatteryModeRadioButton->setChecked(true);
                 superBatteryMode->setChecked(true);
                 break;
             case user_mode::unknown_mode:
@@ -629,8 +642,10 @@ QVector<int> MainWindow::getFan2TempValues() const {
 void MainWindow::setFanSpeedSettings() {
     operate.setFan1SpeedSettings(getFan1SpeedValues());
     operate.setFan1TempSettings(getFan1TempValues());
-    operate.setFan2SpeedSettings(getFan2SpeedValues());
-    operate.setFan2TempSettings(getFan2TempValues());
+    if (operate.getGpuTemp().has_value()) {
+        operate.setFan2SpeedSettings(getFan2SpeedValues());
+        operate.setFan2TempSettings(getFan2TempValues());
+    }
     if (operate.updateEcData())
         checkFanSettingsChanged();
 }
@@ -643,10 +658,14 @@ void MainWindow::setFanModeAdvanced(bool enabled) const {
 }
 
 void MainWindow::checkFanSettingsChanged() const {
+    bool hasGpu = operate.getGpuTemp().has_value();
     bool fanSettingChanged = (getFan1SpeedValues() != operate.getFan1SpeedSettings() ||
-                              getFan2SpeedValues() != operate.getFan2SpeedSettings() ||
-                              getFan1TempValues() != operate.getFan1TempSettings() ||
-                              getFan2TempValues() != operate.getFan2TempSettings());
+                              getFan1TempValues() != operate.getFan1TempSettings());
+    if (hasGpu) {
+        fanSettingChanged = fanSettingChanged ||
+                            (getFan2SpeedValues() != operate.getFan2SpeedSettings() ||
+                             getFan2TempValues() != operate.getFan2TempSettings());
+    }
     ui->fanSpeedApplyButton->setEnabled(fanSettingChanged);
     ui->fanSpeedResetButton->setEnabled(fanSettingChanged);
 }
@@ -667,6 +686,9 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 }
 
 void MainWindow::quitApp() const {
+    if (currentBacklightEffect != 0) {
+        operate.setKeyboardBrightness(savedKeyboardBrightness);
+    }
     operate.closeHelperApp();
     Settings::setValue("MainWindow/Width", MainWindow::width());
     Settings::setValue("MainWindow/Height", MainWindow::height());
@@ -684,6 +706,9 @@ void MainWindow::timerSleepTimeout() {
     if (msecsSinceTimeout > timerSleepWatcher.interval() + 5000) {
         // Went to sleep for at least 5 seconds
         operate.handleWakeEvent();
+        if (currentBacklightEffect != 0) {
+            setBacklightEffect(currentBacklightEffect);
+        }
     }
 }
 
@@ -813,14 +838,72 @@ void MainWindow::on_coolerBoostCheckBox_clicked(bool checked) const {
 }
 
 void MainWindow::on_keyboardBrightnessSlider_valueChanged(int value) const {
-    operate.setKeyboardBrightness(value);
-    if (operate.updateEcData()) {
-        updateKeyboardBrightness();
+    if (currentBacklightEffect == 0) {
+        operate.setKeyboardBrightness(value);
+        if (operate.updateEcData()) {
+            updateKeyboardBrightness();
+        }
     }
 }
 
 void MainWindow::on_keyboardBacklightModeComboBox_currentIndexChanged(int index) const {
     operate.setKeyboardBacklightMode(index);
+}
+
+void MainWindow::on_keyboardBacklightEffectComboBox_currentIndexChanged(int index) {
+    setBacklightEffect(index);
+}
+
+void MainWindow::setBacklightEffect(int effect) {
+    currentBacklightEffect = effect;
+    keyboardEffectStep = 0;
+    Settings::setValue("Settings/KeyboardBacklightEffect", effect);
+
+    if (effect == 0) { // Static (Manual)
+        keyboardEffectTimer.stop();
+        ui->keyboardBrightnessSlider->setEnabled(true);
+        operate.setKeyboardBrightness(savedKeyboardBrightness);
+        ui->keyboardBrightnessSlider->setValue(savedKeyboardBrightness);
+    } else {
+        savedKeyboardBrightness = ui->keyboardBrightnessSlider->value();
+        ui->keyboardBrightnessSlider->setEnabled(false);
+        if (effect == 1) { // Breathing
+            keyboardEffectTimer.start(300);
+        } else if (effect == 2) { // Heartbeat
+            keyboardEffectTimer.start(180);
+        } else if (effect == 3) { // Blink
+            keyboardEffectTimer.start(500);
+        }
+    }
+}
+
+void MainWindow::keyboardEffectTimerTimeout() {
+    switch (currentBacklightEffect) {
+    case 1: { // Breathing: 0 -> 1 -> 2 -> 3 -> 3 -> 2 -> 1 -> 0
+        static const int breathingSteps[] = {0, 1, 2, 3, 3, 2, 1, 0};
+        constexpr int numSteps = sizeof(breathingSteps) / sizeof(breathingSteps[0]);
+        keyboardEffectStep = (keyboardEffectStep + 1) % numSteps;
+        operate.setKeyboardBrightness(breathingSteps[keyboardEffectStep]);
+        break;
+    }
+    case 2: { // Heartbeat: 0 -> 2 -> 0 -> 3 -> 0 -> 0 -> 0 -> 0
+        static const int heartbeatSteps[] = {0, 2, 0, 3, 0, 0, 0, 0};
+        constexpr int numSteps = sizeof(heartbeatSteps) / sizeof(heartbeatSteps[0]);
+        keyboardEffectStep = (keyboardEffectStep + 1) % numSteps;
+        operate.setKeyboardBrightness(heartbeatSteps[keyboardEffectStep]);
+        break;
+    }
+    case 3: { // Blink: 0 -> 0 -> 3 -> 3
+        static const int blinkSteps[] = {0, 0, 3, 3};
+        constexpr int numSteps = sizeof(blinkSteps) / sizeof(blinkSteps[0]);
+        keyboardEffectStep = (keyboardEffectStep + 1) % numSteps;
+        operate.setKeyboardBrightness(blinkSteps[keyboardEffectStep]);
+        break;
+    }
+    default:
+        keyboardEffectTimer.stop();
+        break;
+    }
 }
 
 void MainWindow::on_userModeOnBatteryComboBox_currentIndexChanged(int index) const {

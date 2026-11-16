@@ -22,6 +22,7 @@
 #include <QCoreApplication>
 #include <QDBusConnection>
 #include <QDBusError>
+#include <QFile>
 #include <QProcess>
 #include <QTimer>
 
@@ -44,6 +45,18 @@ void Helper::putValue(const int &address, const int &value) const {
 
 bool Helper::isEcSysModuleLoaded() const {
     if (rw.isEcSys()) {
+        QFile wsFile("/sys/module/ec_sys/parameters/write_support");
+        if (wsFile.exists()) {
+            if (wsFile.open(QIODevice::ReadWrite)) {
+                QByteArray val = wsFile.readAll().trimmed();
+                if (val == "N" || val == "0") {
+                    wsFile.seek(0);
+                    wsFile.write("Y\n");
+                    wsFile.flush();
+                }
+                wsFile.close();
+            }
+        }
         return true;
     }
     if (rw.isAcpiEc()) {
@@ -61,6 +74,18 @@ bool Helper::loadEcSysModule() const {
     process->waitForFinished(1000);
     if (QByteArray output = process->readAllStandardOutput(); output != "")
         fprintf(stderr, "%s", qPrintable(output));
+    QFile wsFile("/sys/module/ec_sys/parameters/write_support");
+    if (wsFile.exists()) {
+        if (wsFile.open(QIODevice::ReadWrite)) {
+            QByteArray val = wsFile.readAll().trimmed();
+            if (val == "N" || val == "0") {
+                wsFile.seek(0);
+                wsFile.write("Y\n");
+                wsFile.flush();
+            }
+            wsFile.close();
+        }
+    }
     if (isEcSysModuleLoaded())
         return true;
     return false;

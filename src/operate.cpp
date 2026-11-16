@@ -290,8 +290,8 @@ user_mode Operate::getUserMode() const {
                 else
                     return user_mode::balanced_mode;
             }
-            case shift_mode::sport_mode: // ?
-                return user_mode::balanced_mode;
+            case shift_mode::sport_mode:
+                return user_mode::performance_mode;
             case shift_mode::turbo_mode:
                 return user_mode::performance_mode;
             default:
@@ -396,10 +396,17 @@ void Operate::setUserMode(user_mode userMode) const {
         case user_mode::balanced_mode:
             userModeStr = "balanced_mode";
             break;
-        case user_mode::performance_mode:
-            shiftMode = shift_mode::turbo_mode; // sport on some devices?
+        case user_mode::performance_mode: {
+            QList<shift_mode> avail = msiEcHelper.getAvailableShiftModes();
+            if (avail.contains(shift_mode::turbo_mode))
+                shiftMode = shift_mode::turbo_mode;
+            else if (avail.contains(shift_mode::sport_mode))
+                shiftMode = shift_mode::sport_mode;
+            else
+                shiftMode = shift_mode::turbo_mode;
             userModeStr = "performance_mode";
             break;
+        }
         case user_mode::silent_mode:
             fanMode = fan_mode::silent_fan_mode;
             userModeStr = "silent_mode";
@@ -471,6 +478,9 @@ void Operate::setFanMode(int value) const {
 }
 
 void Operate::setFanModeAdvanced(bool enabled) const {
+    if (msiEcHelper.hasFanMode()) {
+        msiEcHelper.setFanMode(enabled ? fan_mode::advanced_fan_mode : fan_mode::auto_fan_mode);
+    }
     if (enabled)
         helper.putValue(fanModeAddress, fanModeAdvanced);
     else

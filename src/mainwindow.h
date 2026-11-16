@@ -95,6 +95,13 @@ private:
     qint64 timeLastWatcherInterval = 0;
     void timerSleepTimeout();
 
+    QTimer keyboardEffectTimer;
+    int keyboardEffectStep = 0;
+    int currentBacklightEffect = 0;
+    int savedKeyboardBrightness = 3;
+    void setBacklightEffect(int effect);
+    void keyboardEffectTimerTimeout();
+
     void createTrayIcon();
     void createActions();
     void iconActivated(QSystemTrayIcon::ActivationReason reason);
@@ -145,6 +152,7 @@ private slots:
     void on_keyboardBrightnessSlider_valueChanged(int value) const;
 
     void on_keyboardBacklightModeComboBox_currentIndexChanged(int index) const;
+    void on_keyboardBacklightEffectComboBox_currentIndexChanged(int index);
 
     void on_userModeOnBatteryComboBox_currentIndexChanged(int index) const;
     void on_userModeOnChargerComboBox_currentIndexChanged(int index) const;
