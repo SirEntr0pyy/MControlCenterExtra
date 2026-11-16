@@ -8,38 +8,9 @@
 
 ## 🌟 What's New in this Fork?
 
-This fork introduces critical performance improvements, bug fixes for modern MSI hardware (such as Modern 14 C7M / AMD Barcelo APUs / MS-14JK), dynamic lighting effects for single-color keyboards, and full Debian support:
+This fork introduces performance optimizations (zero UI lag), modern MSI hardware fixes (e.g. Modern 14 C7M / MS-14JK), dynamic lighting effects for single-color keyboards, persistent audio mute LED, and full Debian support.
 
-### 💡 Dynamic Keyboard Backlight Effects
-- **Animation Modes:** Added dynamic lighting modes for single-color (white) backlit keyboards:
-  - **Static:** Solid brightness levels (Off, Low, Medium, High).
-  - **Breathing:** Smooth, continuous fade-in and fade-out pulse effect.
-  - **Heartbeat:** Double-pulse rhythm effect.
-  - **Blink:** Periodic flashing effect.
-- **Sleep & Resume Aware:** Lighting effects automatically resume after waking from system suspend/sleep.
-
-### ⚡ Zero-Lag, Fluid UI (Asynchronous Architecture)
-- Upstream MControlCenter suffered from severe UI freezing (1–5 seconds per tick) caused by synchronous 256-byte EC reads (`/sys/kernel/debug/ec/ec0/io`) on every timer update.
-- **Sub-millisecond Sensor Reads:** CPU and GPU temperatures are now read directly from `msi-ec` sysfs in under 0.001 ms without D-Bus overhead.
-- **Asynchronous Tachometer Reads:** Fan speed queries now use targeted 30 ms `pread()` calls inside a dedicated background worker, eliminating all micro-stutters and keeping the Qt GUI completely responsive.
-
-### 🐧 Full Debian 12 & 13 (Trixie) Support
-- Upstream marked Debian as unsupported due to kernel `ec_sys` behavior.
-- This fork enables runtime `write_support=1` activation for `ec_sys` and works out of the box on modern Debian kernels.
-
-### 🔧 Fix for 8888 RPM Fan Speed Bug
-- Modern MSI laptops (such as `MS-14JK` / Modern 14 C7M and `1551` series) map fan tachometer counters to EC register `0xCD`.
-- Resolved an issue where the app mistakenly read power register `0xC9` (value ~54), calculating $480000 / 54 \approx 8888\text{ RPM}$.
-- The app now automatically detects the firmware model and locks to the correct register.
-
-### 🔇 Persistent Hardware Mute LED (ALSA ctl-led)
-- Fixed an issue where the keyboard mute LED stopped working after a system restart or sleep.
-- Includes automatic ALSA `Master Playback Switch` attachment through the root helper service, on application launch, on wake from sleep, and via persistent udev rules (`/etc/udev/rules.d/99-msi-mute-led.rules`).
-
-### 🚀 Smart Power Profiles & Advanced Fan Curves
-- **Automatic Fallback:** Seamlessly maps performance profiles to `sport_mode` when `turbo_mode` is unsupported by the laptop's EC.
-- **Sleep Watcher:** Reapplies custom advanced fan curves and power settings automatically upon waking from system sleep.
-- **Distinct Application Identity:** Labeled as **MControlCenter Extra** in application menus to avoid collisions with upstream installs.
+👉 **For the complete list of changes and fixes, see [CHANGES.txt](CHANGES.txt).**
 
 ---
 

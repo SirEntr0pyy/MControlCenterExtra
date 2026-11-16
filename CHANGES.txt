@@ -1,0 +1,30 @@
+MControlCenter Extra - Summary of Changes
+==========================================
+
+This fork (SirEntr0pyy/MControlCenterExtra) includes several fixes, optimizations,
+and new features compared to upstream Dmitry Serov's MControlCenter:
+
+1. Keyboard Backlight Effects:
+   - Added dynamic lighting effects (Static, Breathing, Heartbeat, Blink) for single-color white backlit keyboards.
+   - Smooth animation cycle and state preservation across system sleep/resume.
+
+2. Performance & UI Responsiveness:
+   - Eliminated UI freezes and lag caused by blocking 256-byte EC reads on every update.
+   - Temperature readings now read directly from sysfs (<0.001 ms).
+   - Fan tachometer reads are executed asynchronously via lightweight pread (30 ms).
+
+3. Fan Speed & Hardware Fixes:
+   - Fixed fan tachometer stuck at 8888 RPM on MSI Modern 14 C7M (MS-14JK) and related models by reading register 0xCD.
+   - Fixed Advanced Fan Mode activation and curve controls.
+
+4. System & Distro Compatibility:
+   - Added full compatibility with Debian 12 & 13 (Trixie) with runtime ec_sys write_support.
+   - Dynamic power profile fallback between sport_mode and turbo_mode.
+
+5. Audio Mute LED Persistence:
+   - Fixed keyboard mute LED stopping after system reboot or suspend.
+   - Auto-attaches ALSA's Master Playback Switch via helper daemon and udev rule.
+
+6. App Identity & Autostart:
+   - Renamed desktop shortcut to "MControlCenter Extra" to avoid conflicts with upstream.
+   - Documented autostart setup for user login.
