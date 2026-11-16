@@ -162,7 +162,7 @@ MainWindow::MainWindow(QWidget *parent)
     if (!operate.isEcSysModuleLoaded() && !operate.loadEcSysModule())
         QMessageBox::critical(nullptr, this->windowTitle(), tr("The ec_sys module couldn't be detected, it might be required to control the fans."));
 
-
+    operate.attachMuteLed();
 
     if(operate.updateEcData())
         updateData();

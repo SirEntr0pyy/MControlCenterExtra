@@ -43,6 +43,7 @@ public slots:
     Q_NOREPLY void putValue(const int &address, const int &value) const;
     [[nodiscard]] bool isEcSysModuleLoaded() const;
     [[nodiscard]] bool loadEcSysModule() const;
+    Q_NOREPLY void attachMuteLed() const;
 };
 
 #endif // HELPER_H

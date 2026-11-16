@@ -22,6 +22,7 @@
 #include <QCoreApplication>
 #include <QDBusConnection>
 #include <QDBusError>
+#include <QDir>
 #include <QFile>
 #include <QProcess>
 #include <QTimer>
@@ -95,8 +96,43 @@ bool Helper::loadEcSysModule() const {
     return false;
 }
 
+static void setupMuteLed() {
+    for (const QString &type : { "speaker", "mic" }) {
+        QDir dir(QString("/sys/class/sound/ctl-led/%1").arg(type));
+        if (!dir.exists())
+            continue;
+
+        const QString controlName = (type == "speaker") ? "Master Playback Switch" : "Capture Switch";
+        const QStringList cards = dir.entryList(QStringList() << "card*", QDir::Dirs);
+        for (const QString &card : cards) {
+            QString listPath = dir.filePath(card + "/list");
+            QFile listFile(listPath);
+            if (listFile.open(QIODevice::ReadOnly)) {
+                QByteArray content = listFile.readAll().trimmed();
+                listFile.close();
+                if (!content.isEmpty())
+                    continue;
+            }
+
+            QString attachPath = dir.filePath(card + "/attach");
+            QFile attachFile(attachPath);
+            if (attachFile.open(QIODevice::WriteOnly)) {
+                attachFile.write(controlName.toUtf8() + "\n");
+                attachFile.close();
+                fprintf(stderr, "MControlCenter Helper: Attached %s to %s\n", qPrintable(controlName), qPrintable(attachPath));
+            }
+        }
+    }
+}
+
+void Helper::attachMuteLed() const {
+    setupMuteLed();
+}
+
 int main(int argc, char *argv[]) {
     QCoreApplication a(argc, argv);
+
+    setupMuteLed();
 
     QObject obj;
     auto *helper = new Helper(&obj);

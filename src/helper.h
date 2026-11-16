@@ -40,6 +40,7 @@ public:
     int getValue(int address) const;
     QByteArray getValues(int startAddress, int size) const;
     void putValue(int address, int value);
+    void attachMuteLed();
     void quit();
     QDBusInterface *iface;
 private:

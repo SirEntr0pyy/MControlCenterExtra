@@ -115,6 +115,7 @@ public:
 
     void loadSettings() const;
     void handleWakeEvent() const;
+    void attachMuteLed() const;
 
     void putSuperBatteryModeValue(bool enabled) const;
 private:

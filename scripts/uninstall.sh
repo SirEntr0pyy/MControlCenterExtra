@@ -12,5 +12,6 @@ rm -fv /usr/libexec/mcontrolcenter-helper
 rm -fv /etc/dbus-1/system.d/mcontrolcenter-helper.conf
 rm -fv /usr/share/dbus-1/system.d/mcontrolcenter-helper.conf
 rm -fv /usr/share/dbus-1/system-services/mcontrolcenter.helper.service
+rm -fv /etc/udev/rules.d/99-msi-mute-led.rules
 
 echo "Uninstall was successful"

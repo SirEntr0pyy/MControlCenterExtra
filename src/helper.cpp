@@ -128,6 +128,10 @@ void Helper::putValue(int address, int value) {
     printError(iface->lastError());
 }
 
+void Helper::attachMuteLed() {
+    iface->call(QDBus::NoBlock, "attachMuteLed");
+}
+
 void Helper::quit() {
     iface->call("quit");
     printError(iface->lastError());
