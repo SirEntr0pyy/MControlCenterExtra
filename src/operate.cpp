@@ -99,6 +99,11 @@ void Operate::updateEcDataAsync() const {
     helper.updateDataAsync();
 }
 
+void Operate::updateFanSpeedAsync() const {
+    if (fan1Address > 0)
+        helper.updateFanSpeedAsync(fan1Address);
+}
+
 bool Operate::doProbe() const {
     fan1Address = detectFan1Address();
     batteryThresholdAddress = detectBatteryThresholdAddress();
@@ -171,7 +176,7 @@ std::optional<int> Operate::getGpuTemp() const {
 
 int Operate::getFan1Speed() const {
     if (fan1Address > 0)
-        return helper.getFanSpeed(fan1Address);
+        return helper.getCachedFanSpeed();
     return 0;
 }
 

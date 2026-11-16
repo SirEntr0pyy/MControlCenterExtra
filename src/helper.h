@@ -34,6 +34,8 @@ public:
     bool updateData();
     void updateDataAsync();
     int getFanSpeed(int address) const;
+    void updateFanSpeedAsync(int address);
+    int getCachedFanSpeed() const { return cachedFanSpeed; }
     std::optional<int> getOptionalValue(int address) const;
     int getValue(int address) const;
     QByteArray getValues(int startAddress, int size) const;
@@ -42,6 +44,8 @@ public:
     QDBusInterface *iface;
 private:
     bool isUpdatingData = false;
+    bool isUpdatingFanSpeed = false;
+    int cachedFanSpeed = 0;
     void printError(QDBusError const & error) const;
 private slots:
     void callFinishedSlot(QDBusPendingCallWatcher *call);

@@ -226,6 +226,7 @@ void MainWindow::realtimeUpdate() {
     if (!operate.isMsiEcLoaded()) {
         operate.updateEcDataAsync();
     }
+    operate.updateFanSpeedAsync();
     updateData();
 }
 

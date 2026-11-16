@@ -91,6 +91,22 @@ int Helper::getFanSpeed(int address) const {
     return 0;
 }
 
+void Helper::updateFanSpeedAsync(int address) {
+    if (address <= 0 || isUpdatingFanSpeed)
+        return;
+    isUpdatingFanSpeed = true;
+    QDBusPendingCall async = iface->asyncCall("getFanSpeed", address);
+    auto *watcher = new QDBusPendingCallWatcher(async, this);
+    connect(watcher, &QDBusPendingCallWatcher::finished, this, [this](QDBusPendingCallWatcher *call) {
+        isUpdatingFanSpeed = false;
+        QDBusPendingReply<int> reply = *call;
+        if (!reply.isError()) {
+            cachedFanSpeed = reply.value();
+        }
+        call->deleteLater();
+    });
+}
+
 std::optional<int> Helper::getOptionalValue(int address) const {
     if (!ecData.isEmpty())
         return (BYTE) ecData[address];
