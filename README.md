@@ -1,6 +1,6 @@
 # MControlCenter Extra
 
-**MControlCenter Extra** is an enhanced, highly-optimized fork of [MControlCenter](https://github.com/dmitry-s93/MControlCenter) (originally by Dmitry Serov) designed for MSI laptops running GNU/Linux, with specific optimizations for Debian, Ubuntu, Fedora, and Arch Linux.
+**MControlCenter Extra** is an enhanced, highly-optimized fork of [MControlCenter](https://github.com/MControlSuite/MControlCenter) (originally by Dmitry Serov, now maintained by MControlSuite) designed for MSI laptops running GNU/Linux, with specific optimizations for Debian, Ubuntu, Fedora, and Arch Linux.
 
 > **Note:** Tested with the MSI Modern 14 C7M with Debian 13.
 
@@ -148,6 +148,6 @@ Laptops with per-key or multi-zone RGB keyboards interface over USB. For full RG
 
 ## Credits & License
 
-- Original project by [Dmitry Serov](https://github.com/dmitry-s93/MControlCenter).
+- Upstream project by [MControlSuite](https://github.com/MControlSuite/MControlCenter) (originally by [Dmitry Serov](https://github.com/dmitry-s93)).
 - Enhanced and maintained by [SirEntr0pyy](https://github.com/SirEntr0pyy/MControlCenterExtra).
 - Distributed under the [GNU General Public License v3 (GPL-3.0)](LICENSE).
