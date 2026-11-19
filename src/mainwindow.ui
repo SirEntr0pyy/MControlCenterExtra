@@ -32,7 +32,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string notr="true">MControlCenter</string>
+   <string notr="true">MControlCenter Extra</string>
   </property>
   <property name="setWindowOpacity" stdset="0">
    <string/>
@@ -1855,7 +1855,7 @@
         <item row="0" column="0" colspan="3">
          <widget class="QLabel" name="label_3">
           <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;MC&lt;/span&gt;ontrol&lt;span style=&quot; font-weight:700;&quot;&gt;C&lt;/span&gt;enter (MCC) is an application that allows you to change the settings of MSI laptops running Linux.&lt;/p&gt;&lt;p&gt;MCC acts as a graphical interface for the &lt;span style=&quot; font-weight:700;&quot;&gt;MSI-EC &lt;/span&gt;driver that already exist in the Linux kernel, if your device is not supported (grey buttons/limited in-app functionality), please visit the msi-ec github page to get help.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;MControlCenterExtra&lt;/span&gt; is an enhanced application that allows you to change the settings of MSI laptops running Linux.&lt;/p&gt;&lt;p&gt;MControlCenterExtra acts as a graphical interface for the &lt;span style=&quot; font-weight:700;&quot;&gt;MSI-EC &lt;/span&gt;driver that already exists in the Linux kernel, featuring fluid asynchronous UI performance, keyboard lighting animations, hardware mute LED persistence, and support for Debian and modern MSI hardware.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignmentFlag::AlignJustify|Qt::AlignmentFlag::AlignVCenter</set>
@@ -1911,7 +1911,7 @@
           <item row="4" column="0">
            <widget class="QLabel" name="bugTrackerLabel">
             <property name="text">
-             <string>MCC Bug Tracker:</string>
+             <string>Bug Tracker:</string>
             </property>
            </widget>
           </item>
@@ -1939,7 +1939,7 @@
           <item row="3" column="0">
            <widget class="QLabel" name="gitHubLabel">
             <property name="text">
-             <string>MCC GitHub:</string>
+             <string>MControlCenterExtra GitHub:</string>
             </property>
            </widget>
           </item>
@@ -1973,7 +1973,7 @@
           <item row="4" column="1">
            <widget class="QLabel" name="bugTrackerValueLabel">
             <property name="text">
-             <string notr="true">&lt;a href=&quot;https://github.com/MControlSuite/MControlCenter/issues&quot;&gt;https://github.com/MControlSuite/MControlCenter/issues&lt;/a&gt;</string>
+             <string notr="true">&lt;a href=&quot;https://github.com/SirEntr0pyy/MControlCenterExtra/issues&quot;&gt;https://github.com/SirEntr0pyy/MControlCenterExtra/issues&lt;/a&gt;</string>
             </property>
             <property name="openExternalLinks">
              <bool>true</bool>
@@ -1993,7 +1993,7 @@
           <item row="3" column="1">
            <widget class="QLabel" name="gitHubValueLabel">
             <property name="text">
-             <string notr="true">&lt;a href=&quot;https://github.com/MControlSuite/MControlCenter&quot;&gt;https://github.com/MControlSuite/MControlCenter&lt;/a&gt;</string>
+             <string notr="true">&lt;a href=&quot;https://github.com/SirEntr0pyy/MControlCenterExtra&quot;&gt;https://github.com/SirEntr0pyy/MControlCenterExtra&lt;/a&gt;</string>
             </property>
             <property name="openExternalLinks">
              <bool>true</bool>

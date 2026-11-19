@@ -35,6 +35,8 @@ int main(int argc, char *argv[]) {
     }
 
     QApplication a(argc, argv);
+    a.setApplicationName("MControlCenterExtra");
+    a.setApplicationDisplayName("MControlCenter Extra");
 
     QTranslator translator;
     const QStringList uiLanguages = QLocale::system().uiLanguages();
