@@ -1,7 +1,7 @@
 MControlCenter Extra - Summary of Changes
 ==========================================
 
-This fork (SirEntr0pyy/MControlCenterXtra) includes several fixes, optimizations,
+This fork (SirEntr0pyy/MControlCenterExtra) includes several fixes, optimizations,
 and new features compared to upstream MControlCenter (MControlSuite / Dmitry Serov):
 
 1. Keyboard Backlight Effects:
