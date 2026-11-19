@@ -69,8 +69,8 @@ Device support relies on the Linux kernel driver [**msi-ec**](https://github.com
 
 1. Clone or download this repository:
    ```bash
-   git clone https://github.com/SirEntr0pyy/MControlCenterExtra.git
-   cd MControlCenterExtra
+   git clone https://github.com/SirEntr0pyy/MControlCenterXtra.git
+   cd MControlCenterXtra
    ```
 2. Unpack the installer bundle:
    ```bash
@@ -149,5 +149,5 @@ Laptops with per-key or multi-zone RGB keyboards interface over USB. For full RG
 ## Credits & License
 
 - Upstream project by [MControlSuite](https://github.com/MControlSuite/MControlCenter) (originally by [Dmitry Serov](https://github.com/dmitry-s93)).
-- Enhanced and maintained by [SirEntr0pyy](https://github.com/SirEntr0pyy/MControlCenterExtra).
+- Enhanced and maintained by [SirEntr0pyy](https://github.com/SirEntr0pyy/MControlCenterXtra).
 - Distributed under the [GNU General Public License v3 (GPL-3.0)](LICENSE).
