@@ -2,7 +2,7 @@
 
 **MControlCenter Extra** is an enhanced, highly-optimized fork of [MControlCenter](https://github.com/MControlSuite/MControlCenter) (originally by Dmitry Serov, now maintained by MControlSuite) designed for MSI laptops running GNU/Linux, with specific optimizations for Debian, Ubuntu, Fedora, and Arch Linux.
 
-> **Note:** Tested with the MSI Modern 14 C7M with Debian 13.
+> **Note:** Tested on the MSI Modern 14 C7M with Debian 13.
 
 <img width="1500" height="1332" alt="MCC3" src="https://github.com/user-attachments/assets/75b5ee18-ed99-4a89-b9fe-1ec0078760e8" />
 
