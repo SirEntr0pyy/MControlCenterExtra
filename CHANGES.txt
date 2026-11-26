@@ -2,7 +2,7 @@ MControlCenter Extra - Summary of Changes
 ==========================================
 
 This fork (SirEntr0pyy/MControlCenterExtra) includes several fixes, optimizations,
-and new features compared to upstream MControlCenter (MControlSuite / Dmitry Serov):
+and new features compared to upstream MControlCenter (Dmitry Serov):
 
 1. Keyboard Backlight Effects:
    - Added dynamic lighting effects (Static, Breathing, Heartbeat, Blink) for single-color white backlit keyboards.
